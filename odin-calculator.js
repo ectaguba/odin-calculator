@@ -1,5 +1,3 @@
-// let numbers = []; // reduce??
-// let operators = []; // reduce??
 let firstOperand = '';
 let secondOperand = '';
 let operator = '';
@@ -22,6 +20,16 @@ numberBtns.forEach( (button) => {
     button.addEventListener('click', checkSecondOperand);
 })
 
+
+operationBtns.forEach( (button) => {
+    button.addEventListener('click', setOperator);
+    button.addEventListener('click', checkSecondOperand);
+})
+
+clearBtn.addEventListener('click', clear)
+signBtn.addEventListener('click', changeSign)
+backspaceBtn.addEventListener('click', popOperandVal)
+
 function inputNumber(e) {
     num = e.target.textContent;
     if (waitingForSecondOperand) {
@@ -33,62 +41,14 @@ function inputNumber(e) {
     }
 }
 
-operationBtns.forEach( (button) => {
-    button.addEventListener('click', setOperator);
-    button.addEventListener('click', checkSecondOperand);
-})
-
-clearBtn.addEventListener('click', () => {
-    firstOperand = '';
-    secondOperand = '';
-    operator = '';
-    waitingForSecondOperand = true;
-    displayResults.textContent = '0';
-
-    for (i = 0; i < operationBtns.length; i++) {
-        if (operationBtns[i].classList.contains(activeOpButton)) {
-            operationBtns[i].classList.remove(activeOpButton);
-        }
-    }
-
-    console.log("CLEARED");
-})
-
-// bug where pressing signBtn before firstOperand displays NaN
-signBtn.addEventListener('click', () => {
-    if (!firstOperand) {
-        displayResults.textContent = firstOperand;
-    }
-
-    if (waitingForSecondOperand) {
-        tempInt = parseFloat(firstOperand);
-        firstOperand = (tempInt * -1).toString();
-        displayResults.textContent = firstOperand;
-    } 
-    // not waiting and secondOperand is truthy
-    else if (!waitingForSecondOperand && secondOperand) {
-        tempInt = parseFloat(secondOperand);
-        secondOperand = (tempInt * -1).toString();
-        displayResults.textContent = secondOperand;
-    }
-});
-
-backspaceBtn.addEventListener('click', popOperandVal)
-function popOperandVal() {
-    if (waitingForSecondOperand && firstOperand) {
-        firstOperand = firstOperand.slice(0, firstOperand.length - 1);
-        // if whole string is gone, display 0 but keep value of operand
-        (firstOperand === '') ? displayResults.textContent = '0' : displayResults.textContent = firstOperand;
-    } 
-    // not waiting and secondOperand is truthy
-    else if (!waitingForSecondOperand && secondOperand) {
-        secondOperand = secondOperand.slice(0, secondOperand.length - 1);
-        (secondOperand === '') ? displayResults.textContent = '0' : displayResults.textContent = secondOperand;
-    }
+function checkSecondOperand() {
+    // truthy values -> strings are filled
+    return (firstOperand && operator) ? waitingForSecondOperand = false : waitingForSecondOperand = true;
 }
 
+// Setting operators should show results
 function setOperator(e) {
-    // Result of first and second operands
+
     if (firstOperand && secondOperand && operator) {
         operate(operator, parseFloat(firstOperand), parseFloat(secondOperand));
     }
@@ -112,9 +72,53 @@ function isAnotherOperatorActive() {
     return false;
 }
 
-function checkSecondOperand() {
-    // truthy values -> strings are filled
-    return (firstOperand && operator) ? waitingForSecondOperand = false : waitingForSecondOperand = true;
+
+function clear() {
+    firstOperand = '';
+    secondOperand = '';
+    operator = '';
+    waitingForSecondOperand = true;
+    displayResults.textContent = '0';
+
+    for (i = 0; i < operationBtns.length; i++) {
+        if (operationBtns[i].classList.contains(activeOpButton)) {
+            operationBtns[i].classList.remove(activeOpButton);
+        }
+    }
+
+    console.log("CLEARED");
+}
+
+// bug where pressing signBtn before firstOperand displays NaN
+function changeSign() {
+    if (!firstOperand) {
+        displayResults.textContent = firstOperand;
+    }
+
+    if (waitingForSecondOperand) {
+        tempInt = parseFloat(firstOperand);
+        firstOperand = (tempInt * -1).toString();
+        displayResults.textContent = firstOperand;
+    } 
+    // not waiting and secondOperand is truthy
+    else if (!waitingForSecondOperand && secondOperand) {
+        tempInt = parseFloat(secondOperand);
+        secondOperand = (tempInt * -1).toString();
+        displayResults.textContent = secondOperand;
+    }
+}
+
+function popOperandVal() {
+    if (waitingForSecondOperand && firstOperand) {
+        firstOperand = firstOperand.slice(0, firstOperand.length - 1);
+        // if whole string is gone, display 0 but keep value of operand
+        (firstOperand === '') ? displayResults.textContent = '0' : displayResults.textContent = firstOperand;
+    } 
+    // not waiting and secondOperand is truthy
+    else if (!waitingForSecondOperand && secondOperand) {
+        secondOperand = secondOperand.slice(0, secondOperand.length - 1);
+        (secondOperand === '') ? displayResults.textContent = '0' : displayResults.textContent = secondOperand;
+    }
 }
 
 function operate(op, a, b) {
@@ -140,7 +144,7 @@ function operate(op, a, b) {
     console.log(`${firstOperand} ${operator} ${secondOperand} = ${result}`)
     console.log("")
 
-    // IMPORTANT: For more than two operations, assign result to first operand
+    // IMPORTANT: For repeated operations, assign result to first operand
     firstOperand = result;
     secondOperand = '';
 
