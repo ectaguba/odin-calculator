@@ -1,55 +1,61 @@
-let input = '';
-let numbers = []; // reduce??
-let operators = []; // reduce??
-let currentOperation = '';
+// let numbers = []; // reduce??
+// let operators = []; // reduce??
+let firstOperand = '';
+let secondOperand = '';
+let operator = '';
+let waitingForSecondOperand = true;
 
 const displayResults = document.querySelector("#results");
 const displayActions = document.querySelector("#actions");
 
-// Number buttons
 const numberBtns = document.querySelectorAll(".number-btn");
-numberBtns.forEach((button) => {
-    button.addEventListener('click', appendInput);
-})
-
+const operationBtns = document.querySelectorAll(".operation-btn");
 const clearBtn = document.querySelector("#clearBtn");
 const signBtn = document.querySelector("#signBtn");
-const deleteBtn = document.querySelector("#deleteBtn");
+const backspaceBtn = document.querySelector("#backspaceBtn");
 const decimalBtn = document.querySelector("#decimalBtn");
-
-decimalBtn.addEventListener('click', appendInput);
-deleteBtn.addEventListener('click', popInput);
-
-// Operation buttons
-const operationBtns = document.querySelectorAll(".operation-btn");
-operationBtns.forEach( (button) => {
-
-})
-
-const divide = document.querySelector("#divisionBtn");
-const multiply = document.querySelector("#multiplicationBtn");
-const subtract = document.querySelector("#subtractionBtn");
-const add = document.querySelector("#additionBtn");
 const equalsBtn = document.querySelector("#equalsBtn");
 
-decimalBtn.addEventListener('click', appendInput);
-deleteBtn.addEventListener('click', popInput);
-equalsBtn.addEventListener('click', () => operate());
+numberBtns.forEach( (button) => {
+    button.addEventListener('click', inputNumber);
+    button.addEventListener('click', checkSecondOperand);
+})
 
-function appendInput(num) { // num passed as event
-    input += num.target.textContent;
-    displayResults.textContent = input;
+operationBtns.forEach( (button) => {
+    button.addEventListener('click', setOperator)
+})
+
+function inputNumber(e) {
+    num = e.target.textContent;
+    if (waitingForSecondOperand) {
+        firstOperand += num;
+        displayResults.textContent = firstOperand;
+    } else {
+        secondOperand += num
+        displayResults.textContent = secondOperand;
+    }
 }
 
-function popInput() {
-    input = input.slice(0, input.length - 1);
-    displayResults.textContent = input;
+function checkSecondOperand() {
+    return (firstOperand && operator) ? waitingForSecondOperand = false : waitingForSecondOperand = true;
 }
+/*e
 
-function setOperation(newOp) {
+1. Press Number -> 
+       firstOperand filled
+       display firstOperand
 
-}
+2. Press Operation -> operator filled
+       Activate operation button
 
-function operate(operator, a, b) {
-    console.log("work");
-}
+3. If firstOperand and operator are filled -> waitingForSecondOperand false
+
+4. If waitingForSecondOperand true
+       Press Number ->
+           secondOperand filled
+           display secondOperand
+       Press Operator ->
+           return result
+           repeat 3.
+
+*/
