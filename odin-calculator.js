@@ -1,45 +1,53 @@
-let displayValue;
 let input = '';
 let numbers = []; // reduce??
 let operators = []; // reduce??
+let currentOperation = '';
 
-const displayResults = document.querySelector("#results")
+const displayResults = document.querySelector("#results");
+const displayActions = document.querySelector("#actions");
 
-const clearBtn = document.querySelector("#clearBtn")
-const signBtn = document.querySelector("#signBtn")
-const deleteBtn = document.querySelector("#deleteBtn")
-
-const divide = document.querySelector("#divisionBtn")
-const multiply = document.querySelector("#multipilicationBtn")
-const subtract = document.querySelector("#subtractionBtn")
-const add = document.querySelector("#addBtn")
-const equalsBtn = document.querySelector("#equalsBtn")
-
-deleteBtn.addEventListener('click', () => popNumber())
-
-equalsBtn.addEventListener('click', () => operate())
-
+// Number buttons
 const numberBtns = document.querySelectorAll(".number-btn");
-
 numberBtns.forEach((button) => {
-    button.addEventListener('click', () => appendNumber(button.textContent));
+    button.addEventListener('click', appendInput);
 })
 
-/*
-divide.addEventListener('click')
-multiply.addEventListener('click', multiply)
-subtract.addEventListener('click', subtract)
-add.addEventListener('click', add)
-*/
+const clearBtn = document.querySelector("#clearBtn");
+const signBtn = document.querySelector("#signBtn");
+const deleteBtn = document.querySelector("#deleteBtn");
+const decimalBtn = document.querySelector("#decimalBtn");
 
-function appendNumber(num) {
-    input += num;
+decimalBtn.addEventListener('click', appendInput);
+deleteBtn.addEventListener('click', popInput);
+
+// Operation buttons
+const operationBtns = document.querySelectorAll(".operation-btn");
+operationBtns.forEach( (button) => {
+
+})
+
+const divide = document.querySelector("#divisionBtn");
+const multiply = document.querySelector("#multiplicationBtn");
+const subtract = document.querySelector("#subtractionBtn");
+const add = document.querySelector("#additionBtn");
+const equalsBtn = document.querySelector("#equalsBtn");
+
+decimalBtn.addEventListener('click', appendInput);
+deleteBtn.addEventListener('click', popInput);
+equalsBtn.addEventListener('click', () => operate());
+
+function appendInput(num) { // num passed as event
+    input += num.target.textContent;
     displayResults.textContent = input;
 }
 
-function popNumber() {
-    input = input.slice(0, input.length - 1)
+function popInput() {
+    input = input.slice(0, input.length - 1);
     displayResults.textContent = input;
+}
+
+function setOperation(newOp) {
+
 }
 
 function operate(operator, a, b) {
