@@ -50,12 +50,16 @@ clearBtn.addEventListener('click', () => {
             operationBtns[i].classList.remove(activeOpButton);
         }
     }
-    
+
     console.log("CLEARED");
 })
 
-signBtn.addEventListener('click', changeSign);
-function changeSign(e) {
+// bug where pressing signBtn before firstOperand displays NaN
+signBtn.addEventListener('click', () => {
+    if (!firstOperand) {
+        displayResults.textContent = firstOperand;
+    }
+
     if (waitingForSecondOperand) {
         tempInt = parseFloat(firstOperand);
         firstOperand = (tempInt * -1).toString();
@@ -66,6 +70,20 @@ function changeSign(e) {
         tempInt = parseFloat(secondOperand);
         secondOperand = (tempInt * -1).toString();
         displayResults.textContent = secondOperand;
+    }
+});
+
+backspaceBtn.addEventListener('click', popOperandVal)
+function popOperandVal() {
+    if (waitingForSecondOperand && firstOperand) {
+        firstOperand = firstOperand.slice(0, firstOperand.length - 1);
+        // if whole string is gone, display 0 but keep value of operand
+        (firstOperand === '') ? displayResults.textContent = '0' : displayResults.textContent = firstOperand;
+    } 
+    // not waiting and secondOperand is truthy
+    else if (!waitingForSecondOperand && secondOperand) {
+        secondOperand = secondOperand.slice(0, secondOperand.length - 1);
+        (secondOperand === '') ? displayResults.textContent = '0' : displayResults.textContent = secondOperand;
     }
 }
 
@@ -122,6 +140,7 @@ function operate(op, a, b) {
     console.log(`${firstOperand} ${operator} ${secondOperand} = ${result}`)
     console.log("")
 
+    // IMPORTANT: For more than two operations, assign result to first operand
     firstOperand = result;
     secondOperand = '';
 
