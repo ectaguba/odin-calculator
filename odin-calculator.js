@@ -36,6 +36,7 @@ function inputNumber(e) {
 
 operationBtns.forEach( (button) => {
     button.addEventListener('click', setOperator)
+    button.addEventListener('click', checkSecondOperand);
 })
 
 function setOperator(e) {
