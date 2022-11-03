@@ -15,7 +15,6 @@ const operationBtns = document.querySelectorAll(".operation-btn");
 const clearBtn = document.querySelector("#clearBtn");
 const signBtn = document.querySelector("#signBtn");
 const backspaceBtn = document.querySelector("#backspaceBtn");
-const decimalBtn = document.querySelector("#decimalBtn");
 const equalsBtn = document.querySelector("#equalsBtn");
 
 numberBtns.forEach( (button) => {
@@ -45,7 +44,30 @@ clearBtn.addEventListener('click', () => {
     operator = '';
     waitingForSecondOperand = true;
     displayResults.textContent = '0';
+
+    for (i = 0; i < operationBtns.length; i++) {
+        if (operationBtns[i].classList.contains(activeOpButton)) {
+            operationBtns[i].classList.remove(activeOpButton);
+        }
+    }
+    
+    console.log("CLEARED");
 })
+
+signBtn.addEventListener('click', changeSign);
+function changeSign(e) {
+    if (waitingForSecondOperand) {
+        tempInt = parseFloat(firstOperand);
+        firstOperand = (tempInt * -1).toString();
+        displayResults.textContent = firstOperand;
+    } 
+    // not waiting and secondOperand is truthy
+    else if (!waitingForSecondOperand && secondOperand) {
+        tempInt = parseFloat(secondOperand);
+        secondOperand = (tempInt * -1).toString();
+        displayResults.textContent = secondOperand;
+    }
+}
 
 function setOperator(e) {
     // Result of first and second operands
