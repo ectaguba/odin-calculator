@@ -5,6 +5,8 @@ let secondOperand = '';
 let operator = '';
 let waitingForSecondOperand = true;
 
+const activeOpButton = "operation-btn-ACTIVE";
+
 const displayResults = document.querySelector("#results");
 const displayActions = document.querySelector("#actions");
 
@@ -21,10 +23,6 @@ numberBtns.forEach( (button) => {
     button.addEventListener('click', checkSecondOperand);
 })
 
-operationBtns.forEach( (button) => {
-    button.addEventListener('click', setOperator)
-})
-
 function inputNumber(e) {
     num = e.target.textContent;
     if (waitingForSecondOperand) {
@@ -36,7 +34,33 @@ function inputNumber(e) {
     }
 }
 
+operationBtns.forEach( (button) => {
+    button.addEventListener('click', setOperator)
+})
+
+function setOperator(e) {
+    operator = e.target.textContent;
+    if (isAnotherOperatorActive()) {
+        console.log(true);  
+        const oldActive = document.querySelector(`.${activeOpButton}`);
+        oldActive.classList.remove(activeOpButton);
+
+        e.target.classList.add(activeOpButton);
+    } else {
+        console.log(false);
+        e.target.classList.add(activeOpButton);
+    }
+}
+
+function isAnotherOperatorActive() {
+    for (i = 0; i < operationBtns.length; i++) {
+        if (operationBtns[i].classList.contains(activeOpButton)) return true;
+    }
+    return false;
+}
+
 function checkSecondOperand() {
+    // truthy values -> strings are filled
     return (firstOperand && operator) ? waitingForSecondOperand = false : waitingForSecondOperand = true;
 }
 /*e
@@ -50,10 +74,11 @@ function checkSecondOperand() {
 
 3. If firstOperand and operator are filled -> waitingForSecondOperand false
 
-4. If waitingForSecondOperand true
+4. If waitingForSecondOperand false
        Press Number ->
            secondOperand filled
            display secondOperand
+   Else
        Press Operator ->
            return result
            repeat 3.
