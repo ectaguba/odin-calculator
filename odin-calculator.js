@@ -123,8 +123,14 @@ function operate(op, a, b) {
     let result = 0;
     switch (op) {
         case "/": 
-            result = a / b;
-            break;
+            if (b == 0) {
+                document.getElementById("header").textContent = "Divide by 0 error";
+                clear();
+                return;
+            } else {
+                result = a / b;
+                break;
+            }
         case "X":
             result = a * b;
             break;
