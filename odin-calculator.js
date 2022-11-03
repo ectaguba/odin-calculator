@@ -29,20 +29,27 @@ function inputNumber(e) {
         firstOperand += num;
         displayResults.textContent = firstOperand;
     } else {
-        secondOperand += num
+        secondOperand += num;
         displayResults.textContent = secondOperand;
     }
 }
 
 operationBtns.forEach( (button) => {
-    button.addEventListener('click', setOperator)
+    button.addEventListener('click', setOperator);
     button.addEventListener('click', checkSecondOperand);
+})
+
+clearBtn.addEventListener('click', () => {
+    firstOperand = '';
+    secondOperand = '';
+    operator = '';
+    waitingForSecondOperand = true;
+    displayResults.textContent = '0';
 })
 
 function setOperator(e) {
     // Result of first and second operands
     if (firstOperand && secondOperand && operator) {
-        console.log("all true!!")
         operate(operator, parseFloat(firstOperand), parseFloat(secondOperand));
     }
 
