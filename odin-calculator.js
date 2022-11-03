@@ -40,15 +40,20 @@ operationBtns.forEach( (button) => {
 })
 
 function setOperator(e) {
+    // Result of first and second operands
+    if (firstOperand && secondOperand && operator) {
+        console.log("all true!!")
+        operate(operator, parseFloat(firstOperand), parseFloat(secondOperand));
+    }
+
+    // IMPORTANT: If second operator is truthy, calculate first THEN set new operator
     operator = e.target.textContent;
     if (isAnotherOperatorActive()) {
-        console.log(true);  
         const oldActive = document.querySelector(`.${activeOpButton}`);
         oldActive.classList.remove(activeOpButton);
 
         e.target.classList.add(activeOpButton);
     } else {
-        console.log(false);
         e.target.classList.add(activeOpButton);
     }
 }
@@ -64,7 +69,37 @@ function checkSecondOperand() {
     // truthy values -> strings are filled
     return (firstOperand && operator) ? waitingForSecondOperand = false : waitingForSecondOperand = true;
 }
-/*e
+
+function operate(op, a, b) {
+    let result = 0;
+    switch (op) {
+        case "/": 
+            result = a / b;
+            break;
+        case "X":
+            result = a * b;
+            break;
+        case "-": 
+            result = a - b;
+            break;
+        case "+": 
+            result = a + b;
+            break;
+    }
+    result = result.toString();
+    displayResults.textContent = result;
+
+    console.log("BEFORE")
+    console.log(`${firstOperand} ${operator} ${secondOperand} = ${result}`)
+    console.log("")
+
+    firstOperand = result;
+    secondOperand = '';
+
+    console.log("AFTER")
+    console.log(`${firstOperand} ${operator} (second operand: ${secondOperand}) = ${result}`)
+}
+/*
 
 1. Press Number -> 
        firstOperand filled
@@ -84,4 +119,8 @@ function checkSecondOperand() {
            return result
            repeat 3.
 
+Operator
+    calculate and return result
+    assign result to firstOperand
+    reset second Operand
 */
