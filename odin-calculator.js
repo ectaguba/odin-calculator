@@ -55,7 +55,7 @@ function setOperator(e) {
     if (e.target.textContent != "=") operator = e.target.textContent;
     
     // Check for other active buttons and remove their active class
-    if (isAnotherOperatorActive()) {
+    if (isAnotherOperatorActive() && e.target.textContent != "=") {
         const oldActive = document.querySelector(`.${activeOpButton}`);
         oldActive.classList.remove(activeOpButton);
     } 
