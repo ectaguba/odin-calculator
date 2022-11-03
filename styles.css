@@ -82,7 +82,7 @@ button:nth-last-of-type(3) {
     color: black;
 }
 
-.operation-btn, #equalsBtn{
+.operation-btn, #equalsBtn {
     background-color: var(--orange);
     color: black;
     transition: 0.15s;

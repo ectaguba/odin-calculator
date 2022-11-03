@@ -13,22 +13,20 @@ const operationBtns = document.querySelectorAll(".operation-btn");
 const clearBtn = document.querySelector("#clearBtn");
 const signBtn = document.querySelector("#signBtn");
 const backspaceBtn = document.querySelector("#backspaceBtn");
-const equalsBtn = document.querySelector("#equalsBtn");
+const equalsBtn = document.querySelector("#equalsBtn")
 
 numberBtns.forEach( (button) => {
     button.addEventListener('click', inputNumber);
     button.addEventListener('click', checkSecondOperand);
 })
-
-
 operationBtns.forEach( (button) => {
     button.addEventListener('click', setOperator);
     button.addEventListener('click', checkSecondOperand);
 })
-
-clearBtn.addEventListener('click', clear)
-signBtn.addEventListener('click', changeSign)
-backspaceBtn.addEventListener('click', popOperandVal)
+clearBtn.addEventListener('click', clear);
+signBtn.addEventListener('click', changeSign);
+backspaceBtn.addEventListener('click', popOperandVal);
+equalsBtn.addEventListener('click', setOperator);
 
 function inputNumber(e) {
     num = e.target.textContent;
@@ -47,22 +45,23 @@ function checkSecondOperand() {
 }
 
 // Setting operators should show results
+// IMPORTANT: If second operator is truthy, calculate first THEN set new operator
 function setOperator(e) {
 
-    if (firstOperand && secondOperand && operator) {
-        operate(operator, parseFloat(firstOperand), parseFloat(secondOperand));
-    }
+    if (!firstOperand) firstOperand = '0'; // If operator is set after firstOperand
+    if (firstOperand && secondOperand && operator) operate(operator, parseFloat(firstOperand), parseFloat(secondOperand));
 
-    // IMPORTANT: If second operator is truthy, calculate first THEN set new operator
-    operator = e.target.textContent;
+    // Set operator (but not to equal sign)
+    if (e.target.textContent != "=") operator = e.target.textContent;
+    
+    // Check for other active buttons and remove their active class
     if (isAnotherOperatorActive()) {
         const oldActive = document.querySelector(`.${activeOpButton}`);
         oldActive.classList.remove(activeOpButton);
-
-        e.target.classList.add(activeOpButton);
-    } else {
-        e.target.classList.add(activeOpButton);
-    }
+    } 
+    
+    // Activate current operator
+    e.target.classList.add(activeOpButton);
 }
 
 function isAnotherOperatorActive() {
@@ -70,8 +69,7 @@ function isAnotherOperatorActive() {
         if (operationBtns[i].classList.contains(activeOpButton)) return true;
     }
     return false;
-}
-
+} 
 
 function clear() {
     firstOperand = '';
