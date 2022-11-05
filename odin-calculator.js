@@ -18,22 +18,42 @@ const equalsBtn = document.querySelector("#equalsBtn")
 numberBtns.forEach( (button) => {
     button.addEventListener('click', inputNumber);
     button.addEventListener('click', checkSecondOperand);
+    button.addEventListener('keypress', inputNumber);
+    button.addEventListener('keypress', checkSecondOperand); 
 })
 operationBtns.forEach( (button) => {
     button.addEventListener('click', setOperator);
     button.addEventListener('click', checkSecondOperand);
+    button.addEventListener('keypress', inputNumber);
+    button.addEventListener('keypress', checkSecondOperand); 
 })
+
 clearBtn.addEventListener('click', clear);
 signBtn.addEventListener('click', changeSign);
 backspaceBtn.addEventListener('click', popOperandVal);
 equalsBtn.addEventListener('click', setOperator);
 
-function inputNumber(e) {
-    num = e.target.textContent;
+function inputNumber(e) { 
+    let num = '';
+
+    console.log(e.keyCode)
+    switch (e.type) {
+        case "keypress":
+            // feature is bugged
+            num = document.querySelector(`button[data-type="${e.keyCode}"]`).textContent;
+            break;
+        case "click":
+            num = e.target.textContent;
+            break;
+    }
+
+
     if (waitingForSecondOperand) {
+        if (num === "." && firstOperand.includes(".")) return;
         firstOperand += num;
         displayResults.textContent = firstOperand;
     } else {
+        if (num === "." && secondOperand.includes(".")) return;
         secondOperand += num;
         displayResults.textContent = secondOperand;
     }
@@ -52,6 +72,8 @@ function setOperator(e) {
     if (firstOperand && secondOperand && operator) operate(operator, parseFloat(firstOperand), parseFloat(secondOperand));
 
     // Set operator (but not to equal sign)
+        // textContent for clicks
+        // keycode for types
     if (e.target.textContent != "=") operator = e.target.textContent;
     
     // Check for other active buttons and remove their active class
