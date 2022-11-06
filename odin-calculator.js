@@ -93,7 +93,7 @@ function inputNumber(input) {
 }
 
 function checkSecondOperand() {
-    // Truthy values means strings are filled and no longer waiting
+    // Truthy values means both parameters are filled and secondOperator is ready to be input
     return (firstOperand && operator) ? waitingForSecondOperand = false : waitingForSecondOperand = true;
 }
 
@@ -203,35 +203,10 @@ function operate(op, a, b) {
     console.log("BEFORE")
     console.log(`${firstOperand} ${operator} ${secondOperand} = ${result}\n `)
 
-    // IMPORTANT: For repeated operations, assign result to first operand
+    // IMPORTANT: For repeated operations, assign result to firstOperand and reset secondOperand
     firstOperand = result;
     secondOperand = '';
 
     console.log("AFTER")
     console.log(`${firstOperand} ${operator} (second operand should be blank: ${secondOperand}) = ${result}\n `)
 }
-/*
-
-1. Press Number -> 
-       firstOperand filled
-       display firstOperand
-
-2. Press Operation -> operator filled
-       Activate operation button
-
-3. If firstOperand and operator are filled -> waitingForSecondOperand false
-
-4. If waitingForSecondOperand false
-       Press Number ->
-           secondOperand filled
-           display secondOperand
-   Else
-       Press Operator ->
-           return result
-           repeat 3.
-
-Operator
-    calculate and return result
-    assign result to firstOperand
-    reset second Operand
-*/
