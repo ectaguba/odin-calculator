@@ -15,17 +15,18 @@ const signBtn = document.querySelector("#signBtn");
 const backspaceBtn = document.querySelector("#backspaceBtn");
 const equalsBtn = document.querySelector("#equalsBtn")
 
+// Two event listeners -> one input
 numberBtns.forEach( (button) => {
-    button.addEventListener('click', inputNumber);
+    button.addEventListener('click', setInput);
     button.addEventListener('click', checkSecondOperand);
-    button.addEventListener('keypress', inputNumber);
-    button.addEventListener('keypress', checkSecondOperand); 
+    window.addEventListener('keypress', setInput);
+    window.addEventListener('keypress', checkSecondOperand); 
 })
 operationBtns.forEach( (button) => {
-    button.addEventListener('click', setOperator);
+    button.addEventListener('click', setInput);
     button.addEventListener('click', checkSecondOperand);
-    button.addEventListener('keypress', inputNumber);
-    button.addEventListener('keypress', checkSecondOperand); 
+    window.addEventListener('keypress', setInput);
+    window.addEventListener('keypress', checkSecondOperand); 
 })
 
 clearBtn.addEventListener('click', clear);
@@ -33,57 +34,90 @@ signBtn.addEventListener('click', changeSign);
 backspaceBtn.addEventListener('click', popOperandVal);
 equalsBtn.addEventListener('click', setOperator);
 
-function inputNumber(e) { 
-    let num = '';
+function setInput(e) {
+    let input = '';
 
-    console.log(e.keyCode)
+    // Setters
     switch (e.type) {
         case "keypress":
-            // feature is bugged
-            num = document.querySelector(`button[data-type="${e.keyCode}"]`).textContent;
+            input = e.key;
             break;
         case "click":
-            num = e.target.textContent;
+            input = e.target.textContent;
             break;
     }
+    checkInput(input);
+}
 
+function checkInput(input) {
+    // Consider alternative inputs
+    if (input == "Enter") input = "=";
+    if (input == "*") input = "X";
+    // Passers
+    switch (input) {
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+        case "0":
+        case ".":
+            inputNumber(input);
+            break;
+        case "/":
+        case "X":
+        case "-":
+        case "+":
+        case "=":
+            setOperator(input);
+            break;
+        default:
+            break;
+    }
+}
 
+function inputNumber(input) { 
     if (waitingForSecondOperand) {
-        if (num === "." && firstOperand.includes(".")) return;
-        firstOperand += num;
+        if (input === "." && firstOperand.includes(".")) return;
+        firstOperand += input;
         displayResults.textContent = firstOperand;
     } else {
-        if (num === "." && secondOperand.includes(".")) return;
-        secondOperand += num;
+        if (input === "." && secondOperand.includes(".")) return;
+        secondOperand += input;
         displayResults.textContent = secondOperand;
     }
 }
 
 function checkSecondOperand() {
-    // truthy values -> strings are filled
+    // Truthy values means strings are filled and no longer waiting
     return (firstOperand && operator) ? waitingForSecondOperand = false : waitingForSecondOperand = true;
 }
 
 // Setting operators should show results
 // IMPORTANT: If second operator is truthy, calculate first THEN set new operator
-function setOperator(e) {
-
+function setOperator(input) {
     if (!firstOperand) firstOperand = '0'; // If operator is set after firstOperand
     if (firstOperand && secondOperand && operator) operate(operator, parseFloat(firstOperand), parseFloat(secondOperand));
 
     // Set operator (but not to equal sign)
-        // textContent for clicks
-        // keycode for types
-    if (e.target.textContent != "=") operator = e.target.textContent;
+    if (input != "=") operator = input;
     
     // Check for other active buttons and remove their active class
-    if (isAnotherOperatorActive() && e.target.textContent != "=") {
+    if (isAnotherOperatorActive() && input != "=") {
         const oldActive = document.querySelector(`.${activeOpButton}`);
         oldActive.classList.remove(activeOpButton);
     } 
     
     // Activate current operator
-    e.target.classList.add(activeOpButton);
+    operationBtns.forEach( (button) => {
+        if (button.textContent.includes(input)) {
+            button.classList.add(activeOpButton);
+        }
+    })
 }
 
 function isAnotherOperatorActive() {
@@ -109,7 +143,6 @@ function clear() {
     console.log("CLEARED");
 }
 
-// bug where pressing signBtn before firstOperand displays NaN
 function changeSign() {
     if (!firstOperand) {
         displayResults.textContent = firstOperand;
@@ -145,6 +178,7 @@ function operate(op, a, b) {
     let result = 0;
     switch (op) {
         case "/": 
+            // divide by zero error
             if (b == 0) {
                 document.getElementById("header").textContent = "Divide by 0 error";
                 clear();
@@ -167,15 +201,14 @@ function operate(op, a, b) {
     displayResults.textContent = result;
 
     console.log("BEFORE")
-    console.log(`${firstOperand} ${operator} ${secondOperand} = ${result}`)
-    console.log("")
+    console.log(`${firstOperand} ${operator} ${secondOperand} = ${result}\n `)
 
     // IMPORTANT: For repeated operations, assign result to first operand
     firstOperand = result;
     secondOperand = '';
 
     console.log("AFTER")
-    console.log(`${firstOperand} ${operator} (second operand: ${secondOperand}) = ${result}`)
+    console.log(`${firstOperand} ${operator} (second operand should be blank: ${secondOperand}) = ${result}\n `)
 }
 /*
 
